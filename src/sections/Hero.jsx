@@ -18,8 +18,8 @@ function Hero() {
               </span>
             </div>
             <p className="mt-9 text-sm font-semibold tracking-[0.18em] text-sand/85">Hendrich Capalaran</p>
-            <h1 className="mt-5 headline max-w-4xl">
-              AI workflow automations, operations, and virtual assistance.
+            <h1 className="mt-5 headline max-w-4xl font-black uppercase leading-none text-bone">
+              AI workflow automations, Operations, and Virtual assistance.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-sand/82 sm:text-lg">
               I help founders and teams turn scattered work into clear workflows, lighter admin, and dependable day-to-day execution.
@@ -35,13 +35,13 @@ function Hero() {
           </div>
           <div className="grid gap-5 md:grid-cols-[0.82fr_1.18fr]" data-reveal>
             <div className="glass-panel rounded-[1.75rem] p-6">
-              <p className="section-kicker">Signal</p>
-              <p className="mt-4 font-display text-4xl font-black uppercase leading-none text-bone">40%</p>
-              <p className="mt-3 text-sm leading-6 text-sand/75">Average process efficiency lift modeled across automation and operations engagements.</p>
+              <p className="section-kicker">Automation Deployed</p>
+              <p className="mt-4 font-display text-4xl font-black uppercase leading-none text-bone">15+</p>
+              <p className="mt-3 text-sm leading-6 text-sand/75">Growing Workflow Automation Specialist with production-grade deployments, dedicated to building smarter, faster, and more reliable operations.</p>
             </div>
             <div className="glass-panel rounded-[1.75rem] p-6">
               <p className="section-kicker">Focus</p>
-              <p className="mt-4 text-2xl font-semibold leading-tight text-bone">Built for cleaner handoffs and quieter weeks.</p>
+              <p className="mt-3 text-2xl font-black uppercase leading-none text-bone">Automated workflows that bring precision to your operations, ensuring your team spends less time on admin and more time on high-leverage growth.</p>
             </div>
           </div>
         </div>
