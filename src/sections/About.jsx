@@ -38,7 +38,7 @@ const experiences = [
     description:
       'I optimized on-page and off-page SEO — meta titles, descriptions, headings, and internal linking — and produced blog content to increase organic traffic and audience engagement.',
   },
-   {
+  {
     role: 'Workflow Automation Specialist',
     company: 'Remote / Freelance',
     type: 'Remote',
@@ -64,8 +64,9 @@ function About() {
       <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         <SectionHeading
           kicker="Background"
-          title="Five years across content, support, and remote operations."
-          body="My work has moved between digital publishing, e-commerce, and administrative support — each role adding a sharper understanding of how clear systems reduce friction for the people depending on them."
+          scrambleWords="Five years"
+          title="across content, support, and remote operations."
+          body="My experience in digital publishing, e-commerce, and administrative support showed me how much time businesses lose to repetitive manual work. That realization led me to AI automation, where I design workflows that streamline operations, connect applications, and enable teams to work faster and more efficiently."
         />
 
         {/* Education card */}
@@ -170,11 +171,11 @@ function About() {
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#0a0c10] to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#0a0c10] to-transparent" />
 
-        <div className="flex w-[200%] animate-marquee gap-0 text-xs font-black uppercase tracking-[0.34em] text-sand/55">
+        <div className="flex animate-marquee text-xs font-black uppercase tracking-[0.34em] text-sand/55">
           {Array.from({ length: 2 }).map((_, group) => (
-            <div key={group} className="flex min-w-[50%] flex-1 justify-around">
+            <div key={group} className="flex shrink-0 items-center">
               {marqueeItems.map((item) => (
-                <span key={item} className="whitespace-nowrap px-6">
+                <span key={item} className="whitespace-nowrap px-8">
                   {item}
                 </span>
               ))}

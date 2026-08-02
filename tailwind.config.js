@@ -33,12 +33,17 @@ export default {
         marquee: {
           from: { transform: 'translateX(0)' },
           to: { transform: 'translateX(-50%)' }
+        },
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
         }
       },
       animation: {
         equalize: 'equalize 1s ease-in-out infinite',
         floatIn: 'floatIn 0.8s ease-out both',
-        marquee: 'marquee 24s linear infinite'
+        marquee: 'marquee 24s linear infinite',
+        blink: 'blink 1s step-start infinite'
       }
     }
   },

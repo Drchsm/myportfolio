@@ -1,32 +1,50 @@
-import React from 'react';
-import useScrambleText from './useScrambleText'; // Import the new hook
+import React, { useRef, useState, useEffect } from 'react';
+import useScrambleText from './useScrambleText';
 
-function SectionHeading({ kicker, title, body }) {
-  // Define the part of the title that should have the scramble effect
-  const wordsToScramble = "Five years";
-  
-  // Use our custom hook to get the animated display text
-  const scrambledWords = useScrambleText(wordsToScramble);
+function SectionHeading({ kicker, title, body, scrambleWords }) {
+  const ref = useRef(null);
+  const [triggered, setTriggered] = useState(false);
 
-  // Split the rest of the title
-  // Assuming the original title always starts with "Five years"
-  // and we need to capture everything after it.
-  const restOfTitle = title ? title.replace(new RegExp(`^${wordsToScramble}`, 'i'), '') : '';
+  useEffect(() => {
+    if (!scrambleWords) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Reset then re-trigger so it replays each time it enters view
+          setTriggered(false);
+          requestAnimationFrame(() => setTriggered(true));
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [scrambleWords]);
+
+  const scrambledPart = useScrambleText(scrambleWords || '', triggered);
 
   return (
-    <div className="max-w-3xl">
+    <div ref={ref} className="max-w-3xl">
       <p className="section-kicker">{kicker}</p>
-      {/* We keep your styling classes, but make the container flex for the layout */}
-      <h2 className="mt-4 font-display text-3xl font-black uppercase leading-[1.05] tracking-normal text-bone sm:text-3xl lg:text-4xl">
-        <span className="flex flex-col sm:flex-row sm:items-baseline gap-x-3">
-          {/* Apply the color class specifically to the scrambled part */}
-          <span className="text-steel whitespace-nowrap">{scrambledWords}</span>
-          
-          {/* Display the rest of the title with the correct color */}
-          <span className="text-bone">{restOfTitle}</span>
-        </span>
+
+      <h2 className="mt-4 font-display text-3xl font-black uppercase leading-[1.15] tracking-normal text-bone sm:text-3xl lg:text-4xl">
+        {scrambleWords ? (
+          <span className="flex flex-col">
+            <span className="font-mono text-4xl italic text-amber-200 sm:text-5xl lg:text-5xl">{scrambledPart}</span>
+            <span>{title}</span>
+          </span>
+        ) : (
+          title
+        )}
       </h2>
-      {body && <p className="mt-5 max-w-2xl text-base leading-7 text-sand/80 sm:text-lg">{body}</p>}
+
+      {body && (
+        <p className="mt-5 max-w-2xl text-base leading-7 text-sand/80 sm:text-lg">
+          {body}
+        </p>
+      )}
     </div>
   );
 }

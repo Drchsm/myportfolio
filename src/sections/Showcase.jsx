@@ -48,9 +48,9 @@ function Showcase() {
   return (
     <section id="work" className="editorial-shell py-20 sm:py-28" data-reveal>
       <SectionHeading
-        kicker="Selected Placeholders"
-        title="Case studies shaped like real operational problems."
-        body="These are polished starter cards for future client work, designed to demonstrate how Hendrich thinks about outcomes, systems, and implementation details."
+        kicker="highlights"
+        scrambleWords="Recent Projects"
+        body="These projects reflect my approach to AI automation: identifying inefficiencies, designing smart workflows, and building systems that save time, reduce manual effort, and improve business operations."
       />
       <div className="mt-12 grid auto-rows-[minmax(300px,auto)] gap-5 lg:grid-cols-6">
         <ProjectCard project={projects[0]} onOpen={setActiveProject} className="lg:col-span-4 lg:row-span-2" />
