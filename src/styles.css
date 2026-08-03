@@ -1,8 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  Palette is the four-colour system from Designsource/Color Palette.png,
+  extended with the two derived surfaces the layout needs (deep section
+  ground + light "paper" block). Nothing outside this block should carry
+  a raw hex.
+*/
+/*
+  Stored as space-separated RGB channels, not hex, so Tailwind's opacity
+  modifiers (`text-sand/40`) resolve against them. Use `rgb(var(--sand))`
+  anywhere you need one of these directly in CSS or an inline style.
+*/
+:root {
+  --ink: 34 40 49; /* #222831 base ground — Background.txt */
+  --ink-deep: 27 32 39; /* #1b2027 deep section ground */
+  --line: 57 62 70; /* #393e46 dividers */
+  --taupe: 148 137 121; /* #948979 muted accent */
+  --sand: 223 208 184; /* #dfd0b8 warm highlight */
+  --bone: 249 246 240; /* #f9f6f0 primary text on dark */
+
+  --paper: 233 228 218; /* #e9e4da light section ground */
+  --paper-ink: 27 32 39; /* #1b2027 text on --paper */
+  --paper-line: 205 197 180; /* #cdc5b4 borders on --paper */
+  --paper-mute: 99 94 82; /* #635e52 muted text on --paper (5.1:1) */
+
+  /* Recency ramp for the experience timeline — replaces the old off-palette accents. */
+  --accent-1: 223 208 184;
+  --accent-2: 148 137 121;
+  --accent-3: 110 118 131;
+
+  --shell-max: 1540px;
+}
 
 html {
   scroll-behavior: smooth;
@@ -12,64 +42,36 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background: #1e1613;
+  background: rgb(var(--ink));
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 ::selection {
-  background: #c2b2a2;
-  color: #1e1613;
+  background: rgb(var(--sand));
+  color: rgb(var(--ink));
 }
 
 .editorial-shell {
-  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  @apply mx-auto w-full px-5 sm:px-8 lg:px-10;
+  max-width: var(--shell-max);
 }
 
 .glass-panel {
-  @apply border border-steel/15 bg-bone/[0.055] shadow-editorial backdrop-blur-xl;
+  @apply border border-sand/15 bg-espresso/55 shadow-editorial backdrop-blur-xl;
 }
 
 .section-kicker {
-  @apply text-xs font-bold uppercase tracking-[0.34em] text-sand/80;
-}
-
-.headline {
-  @apply font-display text-4xl font-extrabold leading-[0.96] tracking-normal text-bone sm:text-5xl lg:text-6xl;
+  @apply font-mono text-xs font-bold uppercase tracking-[0.34em] text-sand/80;
 }
 
 .focus-ring {
-  @apply outline-none ring-offset-2 ring-offset-espresso focus-visible:ring-2 focus-visible:ring-steel/70;
+  @apply outline-none ring-offset-2 ring-offset-espresso focus-visible:ring-2 focus-visible:ring-sand/70;
 }
 
-.portrait-grain {
-  background:
-    radial-gradient(circle at 50% 22%, rgba(249, 246, 240, 0.45), transparent 10%),
-    radial-gradient(circle at 58% 34%, rgba(194, 178, 162, 0.34), transparent 17%),
-    radial-gradient(circle at 42% 68%, rgba(74, 59, 50, 0.92), transparent 36%),
-    linear-gradient(145deg, #2c211c 0%, #4a3b32 42%, #1e1613 100%);
-}
-
-.portrait-grain::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background:
-    radial-gradient(circle at 38% 28%, transparent 0 12%, rgba(30, 22, 19, 0.36) 18%, transparent 34%),
-    radial-gradient(circle at 70% 10%, rgba(226, 232, 240, 0.18), transparent 24%),
-    linear-gradient(90deg, rgba(249, 246, 240, 0.12), transparent 30%, rgba(0, 0, 0, 0.28));
-  filter: blur(0.2px);
-}
-
-.portrait-grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 18px 18px;
-  mix-blend-mode: overlay;
-  opacity: 0.42;
+/* Fades the marquee at both rails instead of hard-cutting the logos. */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 [data-reveal] {
@@ -85,26 +87,6 @@ body {
 [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
-}
-
-.wave-bar {
-  animation: waveDrift 1.65s ease-in-out infinite;
-  transform-origin: center;
-}
-
-@keyframes waveDrift {
-  0%,
-  100% {
-    transform: scaleY(0.7);
-  }
-
-  35% {
-    transform: scaleY(1.16);
-  }
-
-  68% {
-    transform: scaleY(0.48);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
