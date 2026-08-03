@@ -43,8 +43,8 @@ function SectionIndex({ id, tone = 'dark', className = '' }) {
 
   return (
     // Announced via aria-label rather than an sr-only span. An sr-only span is
-    // still real text in the document, so it ran together with the label beside
-    // it when selected or read aloud ("...HomeMNL . 14.6 N").
+    // still real text in the document, so it would run together with adjacent
+    // labels when selected or read aloud.
     <p
       ref={ref}
       aria-label={`Section ${section.n} of ${TOTAL}: ${section.label}`}

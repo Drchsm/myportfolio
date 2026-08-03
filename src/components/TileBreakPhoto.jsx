@@ -116,7 +116,7 @@ function TileBreakPhoto({
         style={{
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
-          filter: 'grayscale(1) brightness(0.82) contrast(1.06)'
+          filter: 'brightness(0.86) contrast(1.02)'
         }}
       >
         {tiles.map((tile, index) => (

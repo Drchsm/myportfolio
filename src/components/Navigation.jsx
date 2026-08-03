@@ -2,7 +2,6 @@ import { Github, Linkedin, Menu, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { NAV_LINKS, SECTIONS } from '../data/sections.js';
 import { GITHUB_URL, LINKEDIN_URL } from '../data/profile.js';
-import Logo from './Logo.jsx';
 
 function Navigation() {
   const [open, setOpen] = useState(false);
@@ -58,7 +57,9 @@ function Navigation() {
       }`}
     >
       <nav className="editorial-shell flex h-20 items-center justify-between">
-        <Logo />
+        <span className="text-sm font-black leading-none tracking-tight text-bone">
+          Hendrich Capalaran
+        </span>
 
         {/* No social icons here — the hero already pairs them with "View work". */}
         <div className="hidden items-center gap-7 md:flex">

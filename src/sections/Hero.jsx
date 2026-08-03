@@ -45,6 +45,21 @@ function Hero() {
 
   return (
     <section id="top" className="relative min-h-screen overflow-hidden pt-20">
+      {/* Ambient glow blobs sit behind everything else. Kept near-black —
+          just enough accent undertone to read as lit, not a color wash. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-32 -top-32 h-[42rem] w-[42rem] rounded-full bg-glowAmber/8 blur-[140px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 top-1/3 h-[36rem] w-[36rem] rounded-full bg-glowEmerald/8 blur-[150px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-1/4 h-[30rem] w-[30rem] rounded-full bg-glowCopper/8 blur-[130px]"
+      />
+
       <div className="absolute inset-y-0 left-0 w-full opacity-40 lg:w-[38vw] lg:opacity-80">
         {/* Solid photo at rest. Moving the pointer over it cracks the grid
             apart around the cursor — tiles near it shrink and reseal once
@@ -68,13 +83,8 @@ function Hero() {
         opt back in with pointer-events-auto.
       */}
       <div className="pointer-events-none relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-[var(--shell-max)] px-5 pb-8 sm:px-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,1.32fr)] lg:px-10">
-        {/* One row with justify-between rather than two absolutes at magic vw
-            offsets, so the two labels can never crowd each other. */}
-        <div className="pointer-events-none absolute inset-x-10 top-24 hidden items-baseline justify-between gap-8 lg:flex lg:w-[calc(38vw-5rem)]">
+        <div className="pointer-events-none absolute inset-x-10 top-24 hidden lg:block lg:w-[calc(38vw-5rem)]">
           <SectionIndex id="top" />
-          <p className="whitespace-nowrap font-mono text-xs font-bold uppercase tracking-[0.38em] text-bone/45">
-            MNL . 14.6 N
-          </p>
         </div>
 
         <div
@@ -84,7 +94,7 @@ function Hero() {
           <div className="flex items-center gap-4">
             <a
               href="#work"
-              className="focus-ring inline-flex items-center gap-3 rounded-full bg-bone px-6 py-3 text-sm font-bold text-espresso transition hover:-translate-y-0.5 hover:bg-sand"
+              className="focus-ring inline-flex items-center gap-3 rounded-full bg-bone px-6 py-3 text-sm font-bold text-espresso shadow-[0_0_0_rgba(245,158,11,0)] transition hover:-translate-y-0.5 hover:bg-sand hover:shadow-[0_8px_28px_rgb(var(--glow-amber)/0.35)]"
             >
               View work <ArrowDown size={16} />
             </a>
@@ -109,11 +119,16 @@ function Hero() {
           </div>
 
           <p className="mt-10 max-w-[640px] text-[clamp(1.5rem,2.2vw,2.4rem)] font-bold leading-[1.28] tracking-[-0.035em] text-bone/70">
-            I build <span className="text-bone">AI automation systems</span> end to end, turning
-            scattered business operations into dependable systems people actually use.
+            I build{' '}
+            <span className="bg-gradient-to-r from-glowAmber to-glowCopper bg-clip-text text-transparent">
+              AI automation systems
+            </span>{' '}
+            end to end, turning scattered business operations into dependable systems people
+            actually use.
           </p>
 
-          <p className="mt-8 text-sm font-semibold italic text-bone/50">
+          <p className="mt-8 flex items-center gap-2 text-sm font-semibold italic text-bone/50">
+            <span className="h-1.5 w-1.5 rounded-full bg-glowCyan shadow-[0_0_10px_2px_rgb(var(--glow-cyan)/0.8)]" />
             AI automation specialist · operations &amp; systems
           </p>
         </div>
@@ -143,7 +158,7 @@ function Hero() {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-accent3 via-accent1 to-accent2" />
+      <div className="absolute bottom-0 left-0 right-0 h-[5px] bg-gradient-to-r from-glowAmber via-glowCopper to-glowEmerald shadow-[0_0_24px_rgba(245,158,11,0.4)]" />
     </section>
   );
 }

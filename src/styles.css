@@ -31,6 +31,13 @@
   --accent-2: 148 137 121;
   --accent-3: 110 118 131;
 
+  /* Modern-tech glow accents — hero only. Kept separate from the recency
+     ramp above so this doesn't bleed into the experience timeline. */
+  --glow-cyan: 34 211 238; /* #22d3ee — status dot only */
+  --glow-amber: 245 158 11; /* #f59e0b */
+  --glow-copper: 194 65 12; /* #c2410c */
+  --glow-emerald: 5 150 105; /* #059669 */
+
   --shell-max: 1540px;
 }
 

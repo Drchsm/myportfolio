@@ -18,7 +18,11 @@ export default {
         paperMute: 'rgb(var(--paper-mute) / <alpha-value>)',
         accent1: 'rgb(var(--accent-1) / <alpha-value>)',
         accent2: 'rgb(var(--accent-2) / <alpha-value>)',
-        accent3: 'rgb(var(--accent-3) / <alpha-value>)'
+        accent3: 'rgb(var(--accent-3) / <alpha-value>)',
+        glowCyan: 'rgb(var(--glow-cyan) / <alpha-value>)',
+        glowAmber: 'rgb(var(--glow-amber) / <alpha-value>)',
+        glowCopper: 'rgb(var(--glow-copper) / <alpha-value>)',
+        glowEmerald: 'rgb(var(--glow-emerald) / <alpha-value>)'
       },
       fontFamily: {
         display: ['Inter Tight', 'Arial Narrow', 'Arial', 'sans-serif'],
