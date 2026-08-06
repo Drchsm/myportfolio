@@ -4,7 +4,9 @@ import Hero from './sections/Hero.jsx';
 import Services from './sections/Services.jsx';
 import Showcase from './sections/Showcase.jsx';
 import About from './sections/About.jsx';
+import Experience from './sections/Experience.jsx';
 import Contact from './sections/Contact.jsx';
+import NoisyGradientBackground from './components/NoisyGradientBackground.jsx';
 
 function App() {
   useEffect(() => {
@@ -27,16 +29,17 @@ function App() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-espresso text-bone">
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-80">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_8%,rgba(194,178,162,0.16),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(226,232,240,0.1),transparent_26%),linear-gradient(135deg,rgba(74,59,50,0.22),transparent_38%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(249,246,240,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(249,246,240,0.035)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-95">
+        <NoisyGradientBackground />
       </div>
       <div className="relative z-10">
         <Navigation />
+        {/* Order defines the 01-07 numbering; keep in sync with src/data/sections.js */}
         <Hero />
+        <About />
         <Services />
         <Showcase />
-        <About />
+        <Experience />
         <Contact />
       </div>
     </main>

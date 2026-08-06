@@ -1,0 +1,7 @@
+Use the noisy matte background component as the site-wide ambient layer.
+
+Base color: #222831 deep charcoal.
+Texture: subtle fine-grain noise, like brushed matte paper or soft concrete grain.
+Accent atmosphere: sparse radial ambient light using #DFD0B8 and #948979 at low opacity.
+Grid/divider line: #393E46 or #DFD0B8 at very low opacity.
+Avoid: visual clutter, loud gradients, photorealism, drop shadows, excessive animation.
