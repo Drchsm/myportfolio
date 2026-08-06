@@ -1,27 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { seededOrder } from './staggerOrder.js';
 
 const ENTER_MS = 520; // wall-clock time for the whole grid to resolve
 const EXIT_MS = 340; // ~65% of enter — exits should feel faster than entrances
 const CELL_ENTER_MS = 260; // one cell's own fade; the rest of ENTER_MS is stagger
 const CELL_EXIT_MS = 170;
 const MAX_CELLS = 240;
-
-/** Deterministic shuffle, so the reveal order is stable across renders. */
-function seededOrder(count, seed = 0x9e3779b9) {
-  const order = Array.from({ length: count }, (_, i) => i);
-  let state = seed;
-  for (let i = count - 1; i > 0; i -= 1) {
-    state = (state * 1664525 + 1013904223) >>> 0;
-    const j = state % (i + 1);
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  // order[i] = the position cell i holds in the reveal sequence.
-  const rank = new Array(count);
-  order.forEach((cell, position) => {
-    rank[cell] = position;
-  });
-  return rank;
-}
 
 /**
  * Block Matrix / Pixel Reveal.
