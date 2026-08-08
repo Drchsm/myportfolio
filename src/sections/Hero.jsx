@@ -230,7 +230,7 @@ function Hero() {
             className="mt-8 flex items-center gap-2 text-sm font-semibold italic text-bone/50"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-glowCyan shadow-[0_0_10px_2px_rgb(var(--glow-cyan)/0.8)]" />
-            AI automation specialist · operations &amp; systems
+            AI automation specialist · Junior developer
           </p>
         </div>
 

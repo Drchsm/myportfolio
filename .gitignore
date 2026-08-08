@@ -3,3 +3,24 @@ dist
 .env
 .env.local
 npm-debug.log*
+
+# Per-tool AI assistant config/scratch folders (local-only, not project source)
+.agents/
+.augment/
+.claude/
+.codebuddy/
+.codewhale/
+.continue/
+.cursor/
+.factory/
+.gemini/
+.github/
+.kilocode/
+.kiro/
+.opencode/
+.qoder/
+.roo/
+.trae/
+.warp/
+.windsurf/
+preview*.log

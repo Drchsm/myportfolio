@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowUpRight, LockKeyhole } from 'lucide-react';
 import { images } from '../../PhotosForPortfolio';
-import PixelRevealImage from '../components/PixelRevealImage.jsx';
+import techIcons from '../data/techIcons.js';
 import SectionIndex from '../components/SectionIndex.jsx';
 
 const projects = [
@@ -9,11 +9,12 @@ const projects = [
     number: 'P.01',
     title: 'Lead Routing OS',
     category: 'Client / AI / CRM',
-    type: 'Automation command center',
+    type: 'AI automation workflow',
     year: '2026',
     summary: 'A lead intake system that captures form data, enriches records, drafts follow-up, and routes the next action to the right owner.',
-    stack: ['n8n', 'Airtable', 'Slack', 'OpenAI'],
-    image: images.MyPhoto
+    stack: ['n8n', 'Slack', 'HubSpot', 'Claude'],
+    image: '/N8N0.1.png',
+    link: '/case-studies/lead-routing-os.html'
   },
   {
     number: 'P.02',
@@ -37,6 +38,20 @@ const projects = [
   }
 ];
 
+function StackIcon({ name }) {
+  const icon = techIcons.find((t) => t.name.toLowerCase() === name.toLowerCase());
+  if (!icon) return null;
+  return icon.monogram ? (
+    <span className="grid h-4 w-4 place-items-center border border-current font-mono text-[7px] font-bold text-sand/80">
+      {icon.monogram}
+    </span>
+  ) : (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" style={{ fill: icon.hex }} role="img" aria-hidden="true">
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
 function Showcase() {
   return (
     <section id="work" className="bg-umber py-20 text-bone sm:py-28" data-reveal>
@@ -54,19 +69,29 @@ function Showcase() {
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-3">
-          {projects.map((project) => (
-            <article key={project.title} className="group border-b border-bone/12 pb-8">
+          {projects.map((project) => {
+            const Wrapper = project.link ? 'a' : 'article';
+            const wrapperProps = project.link
+              ? { href: project.link, target: '_blank', rel: 'noreferrer' }
+              : {};
+            return (
+            <Wrapper key={project.title} {...wrapperProps} className="group block border-b border-bone/12 pb-8">
               {project.image ? (
-                <PixelRevealImage
-                  src={project.image}
-                  alt=""
-                  cols={8}
-                  rows={8}
-                  className="h-64 border border-bone/10 bg-bone/[0.025]"
-                  imgClassName="opacity-70"
-                >
+                <div className="relative h-64 overflow-hidden border border-bone/10 bg-bone/[0.025]">
+                  <img
+                    src={project.image}
+                    alt=""
+                    className="h-full w-full object-cover opacity-80 transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
                   <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(27,32,39,0.86))]" />
-                </PixelRevealImage>
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background: 'radial-gradient(ellipse at center, transparent 40%, rgb(var(--sand) / 0.55) 100%)',
+                      mixBlendMode: 'soft-light'
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="relative h-64 overflow-hidden border border-bone/10 bg-bone/[0.025]">
                   <div className="grid h-full place-items-center border border-dashed border-bone/10">
@@ -84,8 +109,13 @@ function Showcase() {
                   </p>
                   <h3 className="mt-3 text-3xl font-black tracking-[-0.055em]">{project.title}</h3>
                 </div>
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-bone/20 text-bone/55 transition group-hover:border-sand group-hover:text-sand">
-                  <LockKeyhole size={17} />
+                <span className="group/arrow relative grid h-11 w-11 shrink-0 place-items-center rounded-full border border-bone/20 text-bone/55 transition group-hover:border-sand group-hover:text-sand">
+                  {project.link ? <ArrowUpRight size={17} /> : <LockKeyhole size={17} />}
+                  {project.link && (
+                    <span className="pointer-events-none absolute -top-9 right-0 whitespace-nowrap rounded-full border border-bone/15 bg-umber px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-sand opacity-0 transition-all duration-300 group-hover/arrow:opacity-100 group-hover/arrow:-translate-y-1">
+                      Visit link
+                    </span>
+                  )}
                 </span>
               </div>
 
@@ -96,9 +126,12 @@ function Showcase() {
                 </div>
                 <div className="grid grid-cols-[90px_1fr] gap-4 py-3">
                   <dt className="font-mono text-xs uppercase tracking-[0.28em] text-bone/45">Stack</dt>
-                  <dd className="flex flex-wrap justify-end gap-2">
+                  <dd className="flex flex-wrap items-center justify-end gap-2">
                     {project.stack.map((item) => (
-                      <span key={item} className="rounded-full border border-bone/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-sand/70">{item}</span>
+                      <span key={item} className="flex items-center gap-1.5 rounded-full border border-bone/10 px-2 py-1">
+                        <StackIcon name={item} />
+                        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-sand/70">{item}</span>
+                      </span>
                     ))}
                   </dd>
                 </div>
@@ -109,8 +142,9 @@ function Showcase() {
               </dl>
 
               <p className="mt-5 text-sm font-medium leading-6 text-bone/60">{project.summary}</p>
-            </article>
-          ))}
+            </Wrapper>
+            );
+          })}
         </div>
       </div>
     </section>

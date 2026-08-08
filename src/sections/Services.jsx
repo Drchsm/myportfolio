@@ -30,6 +30,12 @@ const capabilities = [
   }
 ];
 
+const learning = [
+  { code: 'L.01', title: 'Website Development' },
+  { code: 'L.02', title: 'AI Development' },
+  { code: 'L.03', title: 'Cloud Computing' }
+];
+
 const HALF = Math.ceil(techIcons.length / 2);
 
 function Services() {
@@ -73,6 +79,22 @@ function Services() {
                 </p>
               </article>
             ))}
+          </div>
+
+          {/* Sub-numbered continuation of Expertise (03.2) — indented, not a separate nav section. */}
+          <div className="mt-10 border-l-2 border-paperLine pl-6 sm:pl-8">
+            <div className="flex flex-wrap items-center gap-x-3">
+              <SectionIndex number="03.2" label="In the Lab" tone="light" />
+              <p className="font-black text-xs font-black uppercase tracking-[0.36em]">
+                In the Lab
+              </p>
+            </div>
+            <p className="mt-4 max-w-md text-sm font-medium leading-6 text-paperMute">
+              Tracks I&rsquo;m currently building fluency and confidence in, to expand the range of problems I can solve for clients and teams.
+            </p>
+            <p className="mt-4 font-mono text-xs font-bold uppercase leading-6 tracking-[0.08em] text-paperInk/70">
+              {learning.map((item) => `${item.code} ${item.title}`).join(' . ')}
+            </p>
           </div>
         </div>
       </div>
