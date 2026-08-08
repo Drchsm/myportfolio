@@ -5,9 +5,15 @@ import useScrambleText from './useScrambleText.jsx';
 /**
  * The `NN / 07` kicker. Numbers come from src/data/sections.js so the
  * sequence stays in order no matter how sections are rearranged.
+ *
+ * For sub-numbered continuations that aren't full nav entries (e.g. "03.2"),
+ * skip `id` and pass `number`/`label` directly instead — that keeps a
+ * fractional kicker from bumping TOTAL or the whole-number sequence.
  */
-function SectionIndex({ id, tone = 'dark', className = '' }) {
+function SectionIndex({ id, number, label, tone = 'dark', className = '' }) {
   const section = sectionById(id);
+  const n = section?.n ?? number;
+  const sectionLabel = section?.label ?? label;
   const ref = useRef(null);
   const [seen, setSeen] = useState(false);
 
@@ -34,9 +40,9 @@ function SectionIndex({ id, tone = 'dark', className = '' }) {
     return () => observer.disconnect();
   }, []);
 
-  const number = useScrambleText(section?.n ?? '', seen);
+  const scrambled = useScrambleText(n ?? '', seen);
 
-  if (!section) return null;
+  if (!n) return null;
 
   const muted = tone === 'light' ? 'text-paperMute' : 'text-bone/40';
   const accent = tone === 'light' ? 'text-paperInk' : 'text-sand';
@@ -47,11 +53,11 @@ function SectionIndex({ id, tone = 'dark', className = '' }) {
     // labels when selected or read aloud.
     <p
       ref={ref}
-      aria-label={`Section ${section.n} of ${TOTAL}: ${section.label}`}
+      aria-label={`Section ${n} of ${TOTAL}: ${sectionLabel}`}
       className={`font-mono text-xs font-bold uppercase tracking-[0.36em] ${muted} ${className}`}
     >
       <span aria-hidden="true">
-        <span className={accent}>{number || section.n}</span> / {TOTAL}
+        <span className={accent}>{scrambled || n}</span> / {TOTAL}
       </span>
     </p>
   );

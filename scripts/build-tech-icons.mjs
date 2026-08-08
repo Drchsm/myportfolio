@@ -75,7 +75,10 @@ const SLUGS = [
   // Operations
   ['Notion', 'notion'],
   ['Google Workspace', 'google'],
-  ['Asana', 'asana']
+  ['Asana', 'asana'],
+  // Added for project stack chips (Showcase.jsx)
+  ['HubSpot', 'hubspot'],
+  ['Claude', 'claude']
 ];
 
 /*
