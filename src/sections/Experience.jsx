@@ -6,26 +6,26 @@ const experiences = [
   {
     period: '2026 - Present',
     accent: 'rgb(var(--accent-1))',
-    role: 'Workflow Automation Specialist',
-    company: 'Remote / Freelance',
-    label: 'AI Automation',
+    role: 'AI Automation Specialist',
+    company: 'Upwork / Freelance',
+    label: 'AI Automation . n8n . Zapier . Make',
     body: 'Designing n8n workflows that streamline operations, connect applications, reduce manual work, and make recurring processes easier to audit.'
   },
   {
     period: '2024 - 2026',
     accent: 'rgb(var(--accent-2))',
-    role: 'Virtual Operations Specialist',
-    company: 'Remote / Freelance',
-    label: 'EA . Shopify . SEO',
-    body: 'Handled email, calendar, product uploads, customer support, SEO metadata, documentation, reports, and recurring operational admin.'
+    role: 'Digital Content Editor',
+    company: 'Reed Elsevier Philippines',
+    label: 'Digital Content . Editing . QA/QC',
+    body: 'Improved content accuracy and reduced post-publication corrections by implementing consistent review checkpoints across the editorial workflow.'
   },
   {
-    period: '2022 - 2024',
+    period: '2025',
     accent: 'rgb(var(--accent-3))',
-    role: 'Content and Technical Support',
-    company: 'Reed Elsevier / TaskUs',
-    label: 'QA . Support',
-    body: 'Built a foundation in quality control, structured publishing workflows, troubleshooting, and customer-facing technical resolution.'
+    role: 'SEO and Virtual Assistant',
+    company: 'Upwork / Freelance',
+    label: 'SEO . Graphic Design',
+    body: 'Increased organic search visibility for client websites by optimizing on-page elements.'
   }
 ];
 

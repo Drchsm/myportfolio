@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meeting Ops Assistant — turn transcripts into finished work</title>
+<meta name="description" content="A folder-watching automation system that turns a meeting transcript into a summary, filed tasks, and a reviewed follow-up draft — no chatbot, no manual note-taking.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect x="1" y="4" width="20" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M1 8.5H21" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6 12.5L9.5 15.5L16 9.5" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>meeting&#8209;ops<span class="brand-dim">-assistant</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Section">
+      <a href="#how-it-works">How it works</a>
+      <a href="#day">A day with it</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#example">Example output</a>
+      <a href="#tech">Tech</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="site-nav-mobile">
+      <span></span><span></span><span></span>
+      <span class="sr-only">Toggle menu</span>
+    </button>
+  </div>
+  <nav class="site-nav-mobile" id="site-nav-mobile" aria-label="Section, mobile">
+    <a href="#how-it-works">How it works</a>
+    <a href="#day">A day with it</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#example">Example output</a>
+    <a href="#tech">Tech</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section id="top" class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">// technical case study — meeting automation</p>
+        <h1>Meetings end.<br>The work doesn't<br>have to wait for you.</h1>
+        <p class="hero-sub">
+          Drop a transcript in a folder. A running Python pipeline summarizes it,
+          extracts action items into a JSON contract, files a task per item in
+          Asana or Notion, and drafts a follow-up — all before you've closed your
+          laptop. You only review the last step.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#how-it-works">See how it works</a>
+          <a class="btn btn-ghost" href="#architecture">View the architecture</a>
+        </div>
+        <p class="hero-meta">Built &amp; running end-to-end · Python · Claude API · Asana/Notion · Slack · SQLite</p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="false">
+        <div class="term" role="img" aria-label="Terminal showing the pipeline processing a dropped transcript: watcher detects the file, Claude summarizes it, three tasks are created in Asana, and a follow-up draft is posted to Slack for review.">
+          <div class="term-bar">
+            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+            <span class="term-title">watch_folder/</span>
+          </div>
+          <ul class="term-body" id="termLines">
+            <li data-prefix="$"><span>acme-discovery-call.txt</span></li>
+            <li data-prefix=">"><span>watcher: file size stable, ingesting</span></li>
+            <li data-prefix=">"><span>claude: summarizing transcript&hellip;</span></li>
+            <li data-prefix=">"><span>claude: 4 action items, 3 key decisions extracted</span></li>
+            <li data-prefix=">"><span>asana: 4/4 tasks created</span></li>
+            <li data-prefix=">"><span class="ok">slack: follow-up draft posted to #meeting-review &check;</span></li>
+            <li data-prefix=">"><span class="dim">file moved &rarr; processed/</span></li>
+          </ul>
+          <div class="term-cursor" aria-hidden="true"><span class="caret">&#9646;</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROBLEM ============ -->
+  <section id="problem" class="section">
+    <div class="wrap">
+      <p class="eyebrow">the problem</p>
+      <h2>Most of what happens after a meeting, doesn't.</h2>
+      <p class="section-lede">
+        The call goes fine. It's everything downstream of it — the notes, the
+        tasks, the "I'll follow up" — that quietly falls apart.
+      </p>
+      <div class="problem-grid">
+        <article class="problem-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <h3>Too many meetings</h3>
+          <p>Back-to-back calls leave no room to write anything down properly, let alone act on it.</p>
+        </article>
+        <article class="problem-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <h3>Manual note-taking</h3>
+          <p>Typing while listening means doing both badly — or picking one and losing the other.</p>
+        </article>
+        <article class="problem-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.3 3.9 2.6 17.5A1.7 1.7 0 0 0 4.1 20h15.8a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <h3>Missed action items</h3>
+          <p>"Someone" was going to own that task. It never made it into anyone's tracker.</p>
+        </article>
+        <article class="problem-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.6"/></svg>
+          <h3>Scattered information</h3>
+          <p>The decision lives in a call recording, the task lives in someone's head, the recap lives nowhere.</p>
+        </article>
+        <article class="problem-card">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 1 3 6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 18v-4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Forgotten follow-ups</h3>
+          <p>By the time you're free to write the recap, the moment — and half the detail — is gone.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how-it-works" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">how it works</p>
+      <h2>One folder in. A finished trail of work out.</h2>
+      <p class="section-lede">
+        Six stages, running in a fixed sequence for every transcript that lands in the
+        watch folder. Nothing here waits on you until the very last one.
+      </p>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step-no">01</span>
+          <h3>Meeting</h3>
+          <p>Your call tool records it — Zoom, Teams, Meet, or a transcription bot like Otter, Fireflies, or Fathom.</p>
+        </li>
+        <li class="step">
+          <span class="step-no">02</span>
+          <h3>Transcript</h3>
+          <p>Exported as <code>.txt</code> and dropped into <code>WATCH_FOLDER</code>. The one deliberately manual step.</p>
+        </li>
+        <li class="step">
+          <span class="step-no">03</span>
+          <h3>AI processing</h3>
+          <p><code>watcher.py</code> confirms the file's done writing, then sends it to Claude (or a local Ollama model) for structured extraction.</p>
+        </li>
+        <li class="step">
+          <span class="step-no">04</span>
+          <h3>Summary</h3>
+          <p>A 2&ndash;4 sentence summary and a list of key decisions come back as one strict JSON object — no free text to re-parse.</p>
+        </li>
+        <li class="step">
+          <span class="step-no">05</span>
+          <h3>Action items</h3>
+          <p>Each item becomes a real task in Asana or Notion, with an owner and due date where the transcript gave one. One item failing doesn't block the rest.</p>
+        </li>
+        <li class="step">
+          <span class="step-no">06</span>
+          <h3>Follow-up</h3>
+          <p>Claude drafts a recap and posts it — with task links — to a private Slack channel. You read it before anyone else does.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ A DAY WITH IT ============ -->
+  <section id="day" class="section section-day">
+    <div class="wrap">
+      <p class="eyebrow">a day with the assistant</p>
+      <h2>What automatic actually looks like</h2>
+      <p class="section-lede">
+        The human parts of this take minutes. The automated parts take seconds.
+        That gap is the entire point.
+      </p>
+
+      <ol class="timeline">
+        <li class="tl-item">
+          <div class="tl-time">9:00 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-human">you</span>
+            <p>Discovery call with a prospective client, transcription running in the background.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:47 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-human">you</span>
+            <p>Call ends. You export the transcript and drop <code>acme-discovery-call.txt</code> into <code>WATCH_FOLDER</code>. That's your last manual step.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:47:12 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-auto">automatic</span>
+            <p><code>watcher.py</code> notices the new file and waits for its size to stop changing before touching it.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:47:14 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-auto">automatic</span>
+            <p>Claude reads the transcript: a summary, 3 key decisions, and 4 action items come back as structured JSON.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:47:19 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-auto">automatic</span>
+            <p>4 tasks are created in Asana, each with an owner and due date. One extra task with no clear owner is skipped and flagged, not guessed at.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:47:24 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-auto">automatic</span>
+            <p>A follow-up recap is drafted and posted to <code>#meeting-review</code> on Slack, with links to every task that was created.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">9:52 AM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-human">you</span>
+            <p>You skim the Slack draft, tighten one sentence, and send it to the client yourself. Nothing reaches them without you reading it first.</p>
+          </div>
+        </li>
+        <li class="tl-item">
+          <div class="tl-time">5:30 PM</div>
+          <div class="tl-body">
+            <span class="tl-tag tl-human">manager</span>
+            <p>End of day: the dashboard shows 6 meetings processed, 0 sitting in <code>failed/</code>, and every follow-up sent — without anyone chasing it down.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ BUSINESS IMPACT ============ -->
+  <section id="impact" class="section">
+    <div class="wrap">
+      <p class="eyebrow">business impact</p>
+      <h2>What it actually buys you</h2>
+      <div class="impact-grid">
+        <article class="impact-card">
+          <h3>Time back</h3>
+          <p>No transcribing, no formatting a recap, no re-typing action items into a tracker by hand.</p>
+        </article>
+        <article class="impact-card">
+          <h3>Less admin overhead</h3>
+          <p>Task creation and follow-up drafting stop being someone's Tuesday-afternoon chore.</p>
+        </article>
+        <article class="impact-card">
+          <h3>Real accountability</h3>
+          <p>Every action item gets an owner and a due date in the system your team already tracks work in.</p>
+        </article>
+        <article class="impact-card">
+          <h3>Nothing slips through</h3>
+          <p>Task creation is per-item fault-tolerant — one failure doesn't silently swallow the rest.</p>
+        </article>
+        <article class="impact-card">
+          <h3>Searchable meeting history</h3>
+          <p>Every run is recorded — summary, decisions, and outcomes — instead of living only in someone's memory.</p>
+        </article>
+        <article class="impact-card">
+          <h3>Consistent follow-ups</h3>
+          <p>Every meeting gets a recap drafted the same way, whether it's your first call that day or your sixth.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section id="architecture" class="section section-alt">
+    <div class="wrap">
+      <p class="eyebrow">automation architecture</p>
+      <h2>What's actually running underneath</h2>
+      <p class="section-lede">
+        No workflow-builder in the middle — a single Python process watches the
+        folder and drives a fixed pipeline. This is the real shape of it, not a
+        simplified diagram.
+      </p>
+
+      <div class="arch-diagram" role="img" aria-label="Architecture diagram: a .txt transcript is the input, watcher.py using the watchdog library is the automation layer, Claude or local Ollama is the AI processing stage, SQLite in WAL mode is the storage layer, Asana or Notion plus Slack Incoming Webhooks are the business tools, and a FastAPI plus Jinja2 dashboard plus the Slack review message are the outputs.">
+        <div class="arch-row">
+          <div class="arch-node">
+            <span class="arch-label">input</span>
+            <strong>.txt transcript</strong>
+            <span class="arch-sub">dropped in WATCH_FOLDER</span>
+          </div>
+          <svg class="arch-arrow" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12H36M28 4l8 8-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="arch-node">
+            <span class="arch-label">automation layer</span>
+            <strong>watcher.py</strong>
+            <span class="arch-sub">watchdog · stability check</span>
+          </div>
+          <svg class="arch-arrow" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12H36M28 4l8 8-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="arch-node arch-node-accent">
+            <span class="arch-label">ai processing</span>
+            <strong>Claude / Ollama</strong>
+            <span class="arch-sub">structured JSON extraction</span>
+          </div>
+        </div>
+        <div class="arch-row arch-row-down">
+          <svg class="arch-arrow arch-arrow-down" viewBox="0 0 24 40" aria-hidden="true"><path d="M12 2V36M4 28l8 8 8-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="arch-row arch-row-reverse">
+          <div class="arch-node">
+            <span class="arch-label">output</span>
+            <strong>Dashboard + Slack</strong>
+            <span class="arch-sub">FastAPI/Jinja2 · review message</span>
+          </div>
+          <svg class="arch-arrow arch-arrow-rev" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12H36M28 4l8 8-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="arch-node">
+            <span class="arch-label">business tools</span>
+            <strong>Asana / Notion</strong>
+            <span class="arch-sub">+ Slack Incoming Webhook</span>
+          </div>
+          <svg class="arch-arrow arch-arrow-rev" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12H36M28 4l8 8-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="arch-node">
+            <span class="arch-label">storage</span>
+            <strong>SQLite</strong>
+            <span class="arch-sub">storage.py · WAL mode</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="arch-note">
+        Two long-running processes share the database: <code>watcher.py</code> writes a run
+        row and a heartbeat, <code>run_dashboard.py</code> only ever reads. The dashboard can't
+        affect the pipeline — it's a spectator, on purpose.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ EXAMPLE OUTPUT ============ -->
+  <section id="example" class="section">
+    <div class="wrap">
+      <p class="eyebrow">example output</p>
+      <h2>What lands in Slack and the dashboard</h2>
+      <p class="section-lede">
+        A realistic run, shown exactly the way the pipeline structures it —
+        summary, decisions, and one task per action item.
+      </p>
+
+      <div class="run-card">
+        <div class="run-card-head">
+          <div>
+            <span class="run-badge run-badge-ok">completed</span>
+            <h3>Acme Discovery Call</h3>
+            <span class="run-file">acme-discovery-call.txt</span>
+          </div>
+          <span class="run-time">run started 9:47:12 AM · 11s</span>
+        </div>
+
+        <div class="run-section">
+          <h4>Summary</h4>
+          <p>Acme wants to consolidate three tools into one reporting dashboard before their Q3
+             board meeting. Budget is approved pending a scoped proposal; they're comparing us
+             against one other vendor and want a decision by end of month.</p>
+        </div>
+
+        <div class="run-section">
+          <h4>Key decisions</h4>
+          <ul class="run-list">
+            <li>Proposal scope limited to reporting + data sync, not a full platform migration.</li>
+            <li>Acme's engineering lead (Priya) will provide API access by Friday.</li>
+            <li>Kickoff, if approved, targets the first week of next month.</li>
+          </ul>
+        </div>
+
+        <div class="run-section">
+          <h4>Action items</h4>
+          <div class="table-wrap">
+            <table class="run-table">
+              <thead>
+                <tr><th>Task</th><th>Owner</th><th>Due</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Send scoped proposal covering reporting + data sync</td>
+                  <td>You</td>
+                  <td>2026-08-15</td>
+                  <td><a href="#" onclick="return false" class="run-task-link">Asana &#8599;</a></td>
+                </tr>
+                <tr>
+                  <td>Share API access &amp; sandbox credentials</td>
+                  <td>Priya (Acme)</td>
+                  <td>2026-08-14</td>
+                  <td><a href="#" onclick="return false" class="run-task-link">Asana &#8599;</a></td>
+                </tr>
+                <tr>
+                  <td>Confirm board meeting date for timeline planning</td>
+                  <td>You</td>
+                  <td>2026-08-13</td>
+                  <td><a href="#" onclick="return false" class="run-task-link">Asana &#8599;</a></td>
+                </tr>
+                <tr>
+                  <td>Loop in billing for multi-year discount options</td>
+                  <td><span class="dim">unassigned</span></td>
+                  <td><span class="dim">&mdash;</span></td>
+                  <td><span class="run-status-warn">flagged, no task created</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="run-section">
+          <h4>Follow-up draft <span class="run-section-sub">posted to #meeting-review for your review</span></h4>
+          <div class="followup-box">
+            <p>Hi Priya — great talking today. To recap: we'll scope the proposal to reporting
+               and data sync, keeping this focused rather than a full platform swap. I'll get
+               that to you by the 15th. Could you send API/sandbox access by Friday so we can
+               validate the approach? Also, if you can confirm your board meeting date, I'll
+               make sure the timeline lines up. Talk soon!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY BUSINESSES NEED IT ============ -->
+  <section id="why" class="section section-alt">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">why businesses need it</p>
+      <h2>It's an automation system, not a chatbot</h2>
+      <p class="section-lede">
+        Nobody has to remember to open it, prompt it, or ask it anything.
+        It runs on a trigger you already produce — a finished transcript —
+        and stops at the one point that needs a human.
+      </p>
+      <div class="compare">
+        <div class="compare-col">
+          <h3>A chatbot</h3>
+          <ul>
+            <li>Only does something if someone remembers to ask it</li>
+            <li>Lives in a chat window, disconnected from your tools</li>
+            <li>Answers questions; doesn't file anything anywhere</li>
+          </ul>
+        </div>
+        <div class="compare-col compare-col-accent">
+          <h3>This system</h3>
+          <ul>
+            <li>Triggers itself the moment a transcript exists</li>
+            <li>Writes directly into Asana/Notion and Slack — real systems of record</li>
+            <li>Still stops for a human review before anything reaches a client</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TECHNICAL IMPLEMENTATION ============ -->
+  <section id="tech" class="section">
+    <div class="wrap">
+      <p class="eyebrow">technical implementation</p>
+      <h2>How it's actually built</h2>
+
+      <div class="tech-grid">
+        <div class="tech-item">
+          <span class="tech-key">runtime</span>
+          <p>Python 3, single long-running process (<code>watcher.py</code>)</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">file watching</span>
+          <p><code>watchdog</code>, with a write-stability check so partial uploads aren't processed mid-copy</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">ai processing</span>
+          <p>Claude (<code>claude-sonnet-5</code>), structured JSON extraction, extended thinking explicitly disabled so it can't silently eat the output token budget</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">local ai option</span>
+          <p>Ollama (<code>llama3.1</code>) as a config swap &mdash; runs fully offline, no API key required</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">task backends</span>
+          <p>Asana or Notion, chosen by one config value; task creation is per-item fault-tolerant</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">follow-up delivery</span>
+          <p>Slack Incoming Webhook, posted only to a private review channel &mdash; never direct to attendees</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">persistence</span>
+          <p>SQLite via stdlib <code>sqlite3</code>, WAL mode so the watcher and dashboard don't lock each other out</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">dashboard</span>
+          <p>FastAPI + Jinja2, read-only: run history, per-run detail, live watcher status</p>
+        </div>
+        <div class="tech-item">
+          <span class="tech-key">testing</span>
+          <p>91 automated tests (pytest), all against mocked API clients &mdash; zero live network calls</p>
+        </div>
+      </div>
+
+      <div class="flow-note">
+        <p><strong>Fault isolation, deliberately:</strong> every pipeline stage is wrapped so one
+        bad transcript can't take down the watcher, one failed task creation can't block the
+        others, and a database write failure can never block the pipeline itself &mdash; it only
+        costs dashboard visibility for that run. Files that fail move to <code>failed/</code>
+        with the error logged; nothing disappears silently.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="cta">
+    <div class="wrap">
+      <h2>Turn every meeting into organized, actionable work.</h2>
+      <p>No prompting. No manual recap. Just a folder, a pipeline, and a review step before anything goes out.</p>
+      <a class="btn btn-primary" href="#top">Back to the top</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>Meeting Ops Assistant &mdash; a technical portfolio project.</span>
+    <span class="dim">Python · Claude · Asana/Notion · Slack · SQLite · FastAPI</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

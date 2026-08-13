@@ -44,6 +44,7 @@ const SLUGS = [
   // Data
   ['MySQL', 'mysql'],
   ['PostgreSQL', 'postgresql'],
+  ['SQLite', 'sqlite'],
   ['MongoDB', 'mongodb'],
   ['Redis', 'redis'],
   ['Supabase', 'supabase'],
@@ -72,6 +73,7 @@ const SLUGS = [
   // Design
   ['Figma', 'figma'],
   ['Framer', 'framer'],
+  ['Framer Motion', 'framer'],
   // Operations
   ['Notion', 'notion'],
   ['Google Workspace', 'google'],

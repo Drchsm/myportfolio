@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Send } from 'lucide-react';
+import { FileText, Github, Linkedin, Mail, Send } from 'lucide-react';
 import React, { useState } from 'react';
 import Logo from '../components/Logo.jsx';
 import SectionIndex from '../components/SectionIndex.jsx';
@@ -7,7 +7,8 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../data/profile.js';
 const socials = [
   { label: 'LinkedIn', href: LINKEDIN_URL, icon: Linkedin },
   { label: 'GitHub', href: GITHUB_URL, icon: Github },
-  { label: 'Email', href: `mailto:${EMAIL}`, icon: Mail }
+  { label: 'Email', href: `mailto:${EMAIL}`, icon: Mail },
+  { label: 'Résumé', href: '/Hendrich_Capalaran_Resume.pdf', icon: FileText }
 ];
 
 function Contact() {
@@ -43,8 +44,8 @@ function Contact() {
                   <a
                     key={label}
                     href={href}
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                    target={href.startsWith('http') || href.endsWith('.pdf') ? '_blank' : undefined}
+                    rel={href.startsWith('http') || href.endsWith('.pdf') ? 'noreferrer' : undefined}
                     className="focus-ring inline-flex min-h-11 items-center gap-3 rounded-full border border-bone/10 px-5 py-3 text-sm font-bold text-bone/58 transition hover:border-sand hover:text-sand"
                   >
                     <Icon size={17} /> {label}

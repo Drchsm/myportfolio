@@ -1,13 +1,12 @@
-import React from 'react';
-import { ArrowUpRight, LockKeyhole } from 'lucide-react';
-import { images } from '../../PhotosForPortfolio';
+import React, { useRef } from 'react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, LockKeyhole } from 'lucide-react';
 import techIcons from '../data/techIcons.js';
 import SectionIndex from '../components/SectionIndex.jsx';
 
 const projects = [
   {
     number: 'P.01',
-    title: 'Lead Routing OS',
+    title: 'AI Lead Routing Workflow',
     category: 'Client / AI / CRM',
     type: 'AI automation workflow',
     year: '2026',
@@ -18,23 +17,58 @@ const projects = [
   },
   {
     number: 'P.02',
-    title: 'Shopify Ops Desk',
-    category: 'Client / Commerce / Support',
-    type: 'Store operations workspace',
-    year: '2025',
-    summary: 'A back-office rhythm for product updates, refund review, customer issues, and marketplace task tracking.',
-    stack: ['Shopify', 'Sheets', 'Zapier', 'Notion'],
-    image: images.MyPhoto
+    title: 'AI Meeting Ops Assistant',
+    category: 'Personal / AI / Automation',
+    type: 'Meeting automation pipeline',
+    year: '2026',
+    summary: 'A folder-watching Python pipeline that summarizes meeting transcripts with Claude, extracts action items into a JSON contract, files a task per item in Asana or Notion, and drafts a Slack follow-up — reviewed, not retyped.',
+    stack: ['Python', 'Claude', 'Asana', 'Notion', 'Slack', 'SQLite', 'FastAPI'],
+    image: '/meetingopslanding.png',
+    link: '/case-studies/ai-meeting-assistant-site/ai-meeting-ops-html.html'
   },
   {
     number: 'P.03',
-    title: 'Knowledge Workflow',
-    category: 'Archive / SOP / AI',
-    type: 'Reusable prompt and SOP library',
-    year: '2025',
-    summary: 'A lightweight knowledge base that keeps SOPs, AI templates, QA checklists, and recurring reports easy to reuse.',
-    stack: ['Notion', 'Claude', 'Drive', 'Make'],
-    image: null
+    title: 'AI Engineering Flashcards',
+    category: 'Personal / AI / Education',
+    type: 'Engaging way to learn AI engineering',
+    year: '2026',
+    summary: 'A spaced-repetition flashcard app that turns a full AI engineering curriculum — Python to LLMs to cloud certs — into ~106 cards across 7 modules, scheduled by an SM-2-style algorithm so review time goes to what you\'re about to forget, not what you already know.',
+    stack: ['React', 'Vite', 'Tailwind CSS', 'Framer Motion'],
+    image: '/flashcardsgame.png',
+    link: 'https://github.com/Drchsm/flashcardToAIEngineering'
+  },
+  {
+    number: 'P.04',
+    title: 'Coming Soon',
+    category: 'Upcoming / Case Study',
+    type: 'TBA',
+    year: 'TBA',
+    summary: 'A new case study is in the works — check back soon.',
+    stack: ['TBA'],
+    image: null,
+    link: null
+  },
+  {
+    number: 'P.05',
+    title: 'Coming Soon',
+    category: 'Upcoming / Case Study',
+    type: 'TBA',
+    year: 'TBA',
+    summary: 'A new case study is in the works — check back soon.',
+    stack: ['TBA'],
+    image: null,
+    link: null
+  },
+  {
+    number: 'P.06',
+    title: 'Coming Soon',
+    category: 'Upcoming / Case Study',
+    type: 'TBA',
+    year: 'TBA',
+    summary: 'A new case study is in the works — check back soon.',
+    stack: ['TBA'],
+    image: null,
+    link: null
   }
 ];
 
@@ -53,6 +87,18 @@ function StackIcon({ name }) {
 }
 
 function Showcase() {
+  const scrollRef = useRef(null);
+
+  const scrollByCard = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const card = el.firstElementChild;
+    const amount = (card?.getBoundingClientRect().width ?? 0) + 32; // 32px = gap-8
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+  const goPrev = () => scrollByCard(-1);
+  const goNext = () => scrollByCard(1);
+
   return (
     <section id="work" className="bg-umber py-20 text-bone sm:py-28" data-reveal>
       <div className="editorial-shell">
@@ -63,19 +109,46 @@ function Showcase() {
               Some of my latest work
             </h2>
           </div>
-          <p className="max-w-xl justify-self-end pt-20 text-right text-sm font-semibold leading-6 text-bone/40">
-            Some work is shown in limited detail to respect client confidentiality and data privacy. These cards focus on systems thinking, workflow shape, and operational outcomes.
-          </p>
+          <div className="justify-self-end pt-20">
+            <p className="max-w-xl text-right text-sm font-semibold leading-6 text-bone/40">
+              Some work is shown in limited detail to respect client confidentiality and data privacy. These cards focus on systems thinking, workflow shape, and operational outcomes.
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={goPrev}
+                aria-label="Previous projects"
+                className="focus-ring grid h-11 w-11 place-items-center rounded-full border border-bone/20 text-bone/55 transition hover:border-sand hover:text-sand"
+              >
+                <ArrowLeft size={17} />
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next projects"
+                className="focus-ring grid h-11 w-11 place-items-center rounded-full border border-bone/20 text-bone/55 transition hover:border-sand hover:text-sand"
+              >
+                <ArrowRight size={17} />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-3">
+        <div
+          ref={scrollRef}
+          className="mt-12 flex snap-x snap-mandatory gap-8 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {projects.map((project) => {
             const Wrapper = project.link ? 'a' : 'article';
             const wrapperProps = project.link
               ? { href: project.link, target: '_blank', rel: 'noreferrer' }
               : {};
             return (
-            <Wrapper key={project.title} {...wrapperProps} className="group block border-b border-bone/12 pb-8">
+            <Wrapper
+              key={project.number}
+              {...wrapperProps}
+              className="group block shrink-0 basis-full snap-start border-b border-bone/12 pb-8 sm:basis-1/2 lg:basis-1/3"
+            >
               {project.image ? (
                 <div className="relative h-64 overflow-hidden border border-bone/10 bg-bone/[0.025]">
                   <img
