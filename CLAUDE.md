@@ -13,7 +13,7 @@ No lint or test scripts are configured.
 
 ## Architecture
 
-This is a single-page React 19 + Vite portfolio site, entirely client-rendered with no routing or backend.
+This is a single-page React 19 + Vite portfolio site, entirely client-rendered with no routing. The one exception is `api/contact.js`, a Vercel serverless function that emails inquiries from the Contact form via Resend — see that file and `docs/superpowers/specs/2026-08-16-contact-form-email-design.md` for details.
 
 **Section system**: `src/data/sections.js` is the single source of truth for section order, numbering (`01`–`07`), and nav visibility. `src/App.jsx` renders section components in a fixed order that must stay in sync with that file (`App.jsx` has a comment reminder at the render list). `SectionIndex` and `Navigation` both read from `SECTIONS` rather than hardcoding labels/order.
 
