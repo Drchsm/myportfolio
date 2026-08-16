@@ -11,19 +11,32 @@ const socials = [
   { label: 'Résumé', href: '/Hendrich_Capalaran_Resume.pdf', icon: FileText }
 ];
 
+const INITIAL_FORM = { name: '', email: '', message: '', company: '' };
+
 function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [status, setStatus] = useState('idle'); // 'idle' | 'sending' | 'sent' | 'error'
 
   const updateField = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
-    setSent(false);
+    setStatus('idle');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setSent(true);
-    setForm({ name: '', email: '', message: '' });
+    setStatus('sending');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      if (!response.ok) throw new Error('Request failed');
+      setStatus('sent');
+      setForm(INITIAL_FORM);
+    } catch (error) {
+      setStatus('error');
+    }
   };
 
   return (
@@ -68,6 +81,25 @@ function Contact() {
                 <textarea required name="message" value={form.message} onChange={updateField} rows="7" className="focus-ring resize-none border border-bone/10 bg-espresso px-4 py-4 text-bone placeholder:text-bone/40" placeholder="Tell me what needs to be automated, organized, or rebuilt." />
               </label>
               {/*
+                Honeypot: real visitors never see this (Tailwind's sr-only clips
+                it to 1x1px, no layout shift). tabIndex -1 keeps it out of
+                keyboard nav; autoComplete off keeps browsers from filling it.
+                aria-hidden keeps screen readers from announcing it too. If a
+                bot fills every input it finds, api/contact.js sees this
+                non-empty and silently discards the submission.
+              */}
+              <label className="sr-only" aria-hidden="true">
+                Company
+                <input
+                  type="text"
+                  name="company"
+                  value={form.company}
+                  onChange={updateField}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </label>
+              {/*
                 text-charcoal was a token that no longer exists, so the label had
                 no colour of its own; espresso is the palette equivalent.
                 self-start / justify-self-start matter too: the form stretches to
@@ -76,11 +108,21 @@ function Contact() {
               */}
               <button
                 type="submit"
-                className="focus-ring inline-flex min-h-11 w-full items-center justify-center gap-2 self-start rounded-full bg-bone px-5 text-[13px] font-bold tracking-[-0.01em] text-espresso transition hover:-translate-y-0.5 hover:bg-sand sm:w-max sm:justify-self-start"
+                disabled={status === 'sending'}
+                className="focus-ring inline-flex min-h-11 w-full items-center justify-center gap-2 self-start rounded-full bg-bone px-5 text-[13px] font-bold tracking-[-0.01em] text-espresso transition hover:-translate-y-0.5 hover:bg-sand disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 sm:w-max sm:justify-self-start"
               >
-                Send inquiry <Send size={15} />
+                {status === 'sending' ? 'Sending…' : 'Send inquiry'} <Send size={15} />
               </button>
-              {sent && <p className="text-sm font-bold text-sand">Message logged locally. Connect a form endpoint when ready.</p>}
+              {status === 'sent' && (
+                <p className="text-sm font-bold text-sand">Thanks — I'll get back to you soon.</p>
+              )}
+              {status === 'error' && (
+                // red-400 is a deliberate one-off outside the brand token
+                // system (src/styles.css :root) — it's a functional error
+                // signal, not a brand color, so it doesn't belong in the
+                // Designsource-derived palette.
+                <p className="text-sm font-bold text-red-400">Something went wrong. Email me directly at {EMAIL}.</p>
+              )}
             </form>
           </div>
         </div>
