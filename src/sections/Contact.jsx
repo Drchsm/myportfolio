@@ -11,7 +11,7 @@ const socials = [
   { label: 'Résumé', href: '/Hendrich_Capalaran_Resume.pdf', icon: FileText }
 ];
 
-const INITIAL_FORM = { name: '', email: '', message: '', company: '' };
+const INITIAL_FORM = { name: '', email: '', message: '', hp_field: '' };
 
 function Contact() {
   const [form, setForm] = useState(INITIAL_FORM);
@@ -19,11 +19,12 @@ function Contact() {
 
   const updateField = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
-    setStatus('idle');
+    setStatus((current) => (current === 'sending' ? current : 'idle'));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (status === 'sending') return;
     setStatus('sending');
     try {
       const response = await fetch('/api/contact', {
@@ -83,17 +84,21 @@ function Contact() {
               {/*
                 Honeypot: real visitors never see this (Tailwind's sr-only clips
                 it to 1x1px, no layout shift). tabIndex -1 keeps it out of
-                keyboard nav; autoComplete off keeps browsers from filling it.
-                aria-hidden keeps screen readers from announcing it too. If a
-                bot fills every input it finds, api/contact.js sees this
-                non-empty and silently discards the submission.
+                keyboard nav. The field name itself is the primary defense —
+                avoiding autofill-recognized names like "company"/"name"/
+                "email"/"phone" keeps browsers and password managers from
+                silently filling it in for real visitors; autoComplete="off"
+                is a secondary layer, not the thing doing the work. aria-hidden
+                keeps screen readers from announcing it too. If a bot fills
+                every input it finds, api/contact.js sees this non-empty and
+                silently discards the submission.
               */}
               <label className="sr-only" aria-hidden="true">
-                Company
+                Leave this field blank
                 <input
                   type="text"
-                  name="company"
-                  value={form.company}
+                  name="hp_field"
+                  value={form.hp_field}
                   onChange={updateField}
                   tabIndex={-1}
                   autoComplete="off"

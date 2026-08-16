@@ -10,12 +10,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, message, company } = req.body ?? {};
+  const { name, email, message, hp_field: hpField } = req.body ?? {};
 
   // Honeypot: real visitors never see or fill this field (Contact.jsx hides
   // it off-screen). A non-empty value means a bot filled every input it
   // found. Pretend success so the bot's own check passes, but skip Resend.
-  if (typeof company === 'string' && company.trim() !== '') {
+  if (typeof hpField === 'string' && hpField.trim() !== '') {
     return res.status(200).json({ ok: true });
   }
 
